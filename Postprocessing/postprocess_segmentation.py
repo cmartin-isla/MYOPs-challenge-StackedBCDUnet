@@ -37,15 +37,15 @@ from main_postprocess import main_postprocessing_scar, main_postprocess
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Post-process segmentations masks.')
     parser.add_argument("input_path_s", type=str,
-                        default='D:\\Xenia\\Myops_challenge\\Dataset\\preds_style\\preds_style\\',
+                        default='D:\\Xenia\\Myops_challenge\\Dataset\\preds_soft_prediction_15_apex_0\\preds_soft_prediction_15\\',
                         nargs='?', help='path to predicted masks for scar tissue')
     parser.add_argument("input_path_se", type=str,
-                        default='D:\\Xenia\\Myops_challenge\\Dataset\\preds_style\\preds_style\\',
+                        default='D:\\Xenia\\Myops_challenge\\Dataset\\preds_soft_prediction_15_apex_0\\preds_soft_prediction_15\\',
                         nargs='?', help='path to predicted masks for scar and edema tissue')
     parser.add_argument("input_path_gt", type=str,
-                        default='D:\\Xenia\\Myops_challenge\\Dataset\\preds_val\\training\\',
+                        default='D:\\Xenia\\Myops_challenge\\Dataset\\data_test\\data_test\\images\\',
                         nargs='?', help='path to mri and groundthruth segmentation')
-    parser.add_argument("output_path", type=str, default='D:\\Xenia\\Myops_challenge\\Results\\15models\\preds_style_2d\\',
+    parser.add_argument("output_path", type=str, default='D:\\Xenia\\Myops_challenge\\Results\\5models\\Sumbission2_apex\\',
                         nargs='?', help='path to output')
 
     # ==================================================================================================================
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     myo_label = 200
     edema_label = 1220
     scar_label = 2221
-    filename_part = ['myops_training_', '_pred_se.nii.gz']
+    filename_part = ['myops_test_', '_pred_se.nii.gz']
 
     # Initialize dataframes to save the results
     dice_net_s = pd.DataFrame()
@@ -80,21 +80,19 @@ if __name__ == '__main__':
 
     # Process every image found in the input directory with scar tissue
     for name in glob.glob(os.path.join(input_path_s, filename_part[0] + '*' + filename_part[1])):
-        dice_s_value, dice_se_value, dice_myo_value, filename = main_postprocess(input_path, input_path_s, input_path_se, name, filename_part, output_path, myo_label, edema_label, scar_label)
+        dice_s_value, filename = main_postprocess(input_path, input_path_s, input_path_se, name, filename_part, output_path, myo_label, edema_label, scar_label)
         dice_net_s[filename] = dice_s_value
-        dice_net_se[filename] = dice_se_value
-        dice_net_myo[filename] = dice_myo_value
         print("Processed subject: ", filename)
      #   pdb.set_trace()
     # ==================================================================================================================
     #                                              Save results
     # ==================================================================================================================
     # Write .csv with results for myo
-    dice_net_myo_init = dice_net_myo.rename(index={0: 'Net', 1: 'Con'})
-    dice_net_myo = dice_net_myo_init.copy()
-    dice_net_myo['Mean'] = dice_net_myo_init.mean(axis=1)
-    dice_net_myo['Std'] = dice_net_myo_init.std(axis=1, ddof=1)
-    dice_net_myo.to_csv(os.path.join(output_path, 'Dice_results_myo.csv'))
+    # dice_net_myo_init = dice_net_myo.rename(index={0: 'Net', 1: 'Con'})
+    # dice_net_myo = dice_net_myo_init.copy()
+    # dice_net_myo['Mean'] = dice_net_myo_init.mean(axis=1)
+    # dice_net_myo['Std'] = dice_net_myo_init.std(axis=1, ddof=1)
+    # dice_net_myo.to_csv(os.path.join(output_path, 'Dice_results_myo.csv'))
     # Write .csv with results for scar
     dice_net_s_init = dice_net_s.rename(index={0: 'Net', 1: 'Convex hull'})
     dice_net_s = dice_net_s_init.copy()
@@ -102,8 +100,8 @@ if __name__ == '__main__':
     dice_net_s['Std'] = dice_net_s_init.std(axis=1, ddof=1)
     dice_net_s.to_csv(os.path.join(output_path, 'Dice_results_scar.csv'))
     # Write .csv with results for scar+edema
-    dice_net_se_init = dice_net_se.rename(index={0: 'Net', 1: 'Corrected using myo', 2: 'Corrected with scar'})
-    dice_net_se = dice_net_se_init.copy()
-    dice_net_se['Mean'] = dice_net_se_init.mean(axis=1)
-    dice_net_se['Std'] = dice_net_se_init.std(axis=1, ddof=1)
-    dice_net_se.to_csv(os.path.join(output_path, 'Dice_results_edema.csv'))
+    # dice_net_se_init = dice_net_se.rename(index={0: 'Net', 1: 'Corrected using myo', 2: 'Corrected with scar'})
+    # dice_net_se = dice_net_se_init.copy()
+    # dice_net_se['Mean'] = dice_net_se_init.mean(axis=1)
+    # dice_net_se['Std'] = dice_net_se_init.std(axis=1, ddof=1)
+    # dice_net_se.to_csv(os.path.join(output_path, 'Dice_results_edema.csv'))

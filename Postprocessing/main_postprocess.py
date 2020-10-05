@@ -8,7 +8,7 @@ import numpy as np
 import os
 import pdb
 import re
-from seg_accuracy_metrics import dice_corrected, dice_corrected_2d
+from seg_accuracy_metrics import dice_corrected
 from skimage.morphology import medial_axis, disk
 from scipy import ndimage
 import cv2
@@ -217,8 +217,8 @@ def main_postprocess(input_path, input_path_s, input_path_se, name, filename_par
     co_nii = np.array(co_nib.get_data())
     de_nib = nib.load(os.path.join(input_path, filename_part[0] + filename + '_DE.nii.gz'))
     de_nii = np.array(de_nib.get_data())
-    if os.path.isfile(os.path.join(input_path, filename_part[0] + filename + '_gd.nii.gz')):
-        gt_nib = nib.load(os.path.join(input_path, filename_part[0] + filename + '_gd.nii.gz'))
+    if os.path.isfile(os.path.join(input_path, filename_part[0] + filename + '_gt_scar.nii.gz')):
+        gt_nib = nib.load(os.path.join(input_path, filename_part[0] + filename + '_gt_scar.nii.gz'))
         gt_nii = np.array(gt_nib.get_data())
         gt_s = gt_nii > 0
     # Load predictions for myocardium and scar
@@ -234,9 +234,9 @@ def main_postprocess(input_path, input_path_s, input_path_se, name, filename_par
     myo_nii = myo_nii > 0
     s_nii = s_nii == scar_label
     se_nii = (se_nii == scar_label) | (se_nii == edema_label)
-    gt_s = gt_nii == scar_label
-    gt_se = (gt_nii == scar_label) | (gt_nii == edema_label)
-    gt_myo = (gt_nii == myo_label) | (gt_nii == scar_label) | (gt_nii == edema_label)
+    # gt_s = gt_nii > 0
+    # gt_se = (gt_nii == scar_label) | (gt_nii == edema_label)
+    # gt_myo = (gt_nii == myo_label) | (gt_nii == scar_label) | (gt_nii == edema_label)
     # ==============================================================================================================
     #                                              Post-process
     # ==============================================================================================================
@@ -285,18 +285,20 @@ def main_postprocess(input_path, input_path_s, input_path_se, name, filename_par
     # ==============================================================================================================
 
     # Dice net for scar before and after correction
-    dice_s_all = dice_corrected_2d(s_nii, scar_cor, gt_s)
-
+    if os.path.isfile(os.path.join(input_path, filename_part[0] + filename + '_gt_scar.nii.gz')):
+        dice_s_all = dice_corrected(s_nii, scar_cor, gt_s)
+    else:
+        dice_s_all = ''
     # Dice net for myocardium before and after correction
-    dice_myo_all = dice_corrected_2d(myo_nii, myo_cor, gt_myo)
-    # Dice net for edema+scar before and after correction
-    dice_se_all = dice_corrected_2d(se_nii, se_cor, gt_se)
-    # Dice net for edema+scar corrected by scar before and after correction
-    _, dice_cor_se_1 = dice_corrected_2d(se_nii, se_cor_final, gt_se)
-    dice_se_all.append(dice_cor_se_1)
+    # dice_myo_all = dice_corrected(myo_nii, myo_cor, gt_myo)
+    # # Dice net for edema+scar before and after correction
+    # dice_se_all = dice_corrected(se_nii, se_cor, gt_se)
+    # # Dice net for edema+scar corrected by scar before and after correction
+    # _, dice_cor_se_1 = dice_corrected(se_nii, se_cor_final, gt_se)
+    # dice_se_all.append(dice_cor_se_1)
 
     print(dice_s_all)
-    print(dice_myo_all)
-    print(dice_se_all)
+    # print(dice_myo_all)
+    # print(dice_se_all)
 
-    return dice_s_all, dice_se_all, dice_myo_all, filename
+    return dice_s_all, filename
