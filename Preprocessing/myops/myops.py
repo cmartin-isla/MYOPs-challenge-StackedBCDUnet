@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Authors:
 # Víctor M. Campello (vicmancr@gmail.com)
+# Carlos Martín-Isla (carlos.martin.isla.89@gmail.com) 
 
 import os
 import re
 import glob
 import pandas as pd
 
-wd = 'D:/MYOPS/train25/train25'
 wd = 'D:/myops_unet/data/myops'
 class Myops(object):
     '''
