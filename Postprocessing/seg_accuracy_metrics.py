@@ -5,7 +5,6 @@ Author: Xenia Gkontra, UB, 2020
 """
 
 import numpy as np
-import pdb
 
 def dice(gt, seg):
     """Function to calculate dice coefficient between two segmenattions
@@ -46,7 +45,7 @@ def dice_2d(gt_3d, seg_3d):
             dice_coef.append(2 * a / (b + c))
 
     dice_coef_mean = np.mean(dice_coef)
-    pdb.set_trace()
+
     return dice_coef_mean
 
 
