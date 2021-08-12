@@ -21,7 +21,9 @@ To reproduce the style transfer and morphological augmentations:
 BCDU-Net:
 
 You can find the BCDU-Net official repositories here:
-https://github.com/rezazad68/BCDU-Net
+https://github.com/rezazad68/BCDU-Net 
+
+Train it with the SPADE augmentations.
 
 
 
