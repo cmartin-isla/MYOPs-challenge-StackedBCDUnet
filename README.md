@@ -1,5 +1,6 @@
 
 Semantic CMR Synthesis:
+
 To train the style and morphological synthesis: 
 
 1. Download the hdf5 dataset file, the SPADE checkpoints and the final SPADE model from https://mega.nz/file/NdJ3FQAT#gXjITYynLMS303zGMVwDurs0nb6MK4ck2MfTdY3rOnI
