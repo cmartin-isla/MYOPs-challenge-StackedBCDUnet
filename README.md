@@ -18,5 +18,12 @@ To reproduce the style transfer and morphological augmentations:
 
 
 
+BCDU-Net:
+
+You can find the BCDU-Net official repositories here:
+https://github.com/rezazad68/BCDU-Net
+
+
+
 
 
