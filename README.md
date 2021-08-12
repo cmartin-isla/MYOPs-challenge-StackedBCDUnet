@@ -14,7 +14,7 @@ To reproduce the style transfer and morphological augmentations:
 2. Run online_augmenation_myops.py to generate and visualize the different augmentation techniques and generate the augmented dataset.
 
 
-
+![Alt text](example_synth.jpg?raw=true "Title")
 
 
 
